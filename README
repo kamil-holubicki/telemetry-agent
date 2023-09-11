@@ -1,0 +1,35 @@
+telemetry-agent --help
+usage: telemetry-agent --productFamily=PRODUCTFAMILY --osName=OSNAME --hwArchitecture=HWARCHITECTURE --productVersion=PRODUCTVERSION [<flags>]
+
+
+Flags:
+      --[no-]help              Show context-sensitive help (also try --help-long and --help-man).
+  -i, --instanceId=INSTANCEID  Instance ID
+  -f, --productFamily=PRODUCTFAMILY  
+                               Product family
+  -o, --osName=OSNAME          Operating system name
+  -h, --hwArchitecture=HWARCHITECTURE  
+                               Hardware architecture
+  -v, --productVersion=PRODUCTVERSION  
+                               Product version
+  -d, --telemetryApi="http://localhost:8081/v1/telemetry/GenericReport"  
+                               Telemetry API endpoint
+
+
+Example:
+
+./telemetry-agent -f PRODUCT_FAMILY_MYSQL -h "$(uname -m)" -o "$(uname -ro)" -v 8.0.33
+
+
+instanceId parameter is optional, however advised to be passed as cmd line arg as well.
+1. If the parameter is omitted, gopsutil.GetHost() does the following:
+	1. Get UUID from /sys/class/dmi/id/product_uuid (needs root access)
+	2. Get UUID from machine-id
+	3. Get UUID from sys/kernel/random/boot_id (this ID changes on every boot, so not ideal)
+1. For Docker container 1, 2, 3 are not available.
+In docker entrypoint script we can detect if /telemetry_uuid file exists.
+If not, create it with random uuid and pass its content as cmd line arg.
+IF file exists, we should not invoke telemetry-agent as for Phase 0 we are interested only
+with 1-time call home during deployment.
+2. For baremetal installation 1, 2 should be available, but still advised to generate UUID
+externally and pass as cmd line param to avoid fallback to 3.
