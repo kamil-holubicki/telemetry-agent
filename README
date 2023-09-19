@@ -1,7 +1,7 @@
 usage: ./call-home.sh OPTIONS
 
-Collects telemetry information and sends it to a Percona server. The data collection
-may be disabled via setting an environment variable [PERCONA_TELEMETRY_DISABLE].
+Collects telemetry information and sends it to a Telemetry service. The data collection
+may be disabled via setting an environment variable [PERCONA_TELEMETRY_DISABLE=1].
 
 The script validates only if mandatory parameters are provided.
 It does not validate the validity and itegritiy of provided parameters.

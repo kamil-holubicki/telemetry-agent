@@ -37,8 +37,8 @@ usage()
 
 usage: $0 OPTIONS
 
-Collects telemetry information and sends it to a Percona server. The data collection
-may be disabled via setting an environment variable [PERCONA_TELEMETRY_DISABLE].
+Collects telemetry information and sends it to a Telemetry service. The data collection
+may be disabled via setting an environment variable [PERCONA_TELEMETRY_DISABLE=1].
 
 The script validates only if mandatory parameters are provided.
 It does not validate the validity and itegritiy of provided parameters.
@@ -88,31 +88,31 @@ validate_args()
 
     if [[ -z "$PERCONA_PRODUCT_FAMILY" ]];
     then
-        printf "PERCONA_PRODUCT_FAMILY not provided. %s\n" "$USAGE_TEXT" >&2
+        printf "PERCONA_PRODUCT_FAMILY is not provided. %s\n" "$USAGE_TEXT" >&2
         usage 1
     fi
 
     if [[ -z "$PERCONA_PRODUCT_VERSION" ]];
     then
-        printf "PERCONA_PRODUCT_VERSION not provided. %s\n" "$USAGE_TEXT" >&2
+        printf "PERCONA_PRODUCT_VERSION is not provided. %s\n" "$USAGE_TEXT" >&2
         usage 1
     fi
 
     if [[ -z "$PERCONA_OPERATING_SYSTEM" ]];
     then
-        printf "PERCONA_OPERATING_SYSTEM not provided. %s\n" "$USAGE_TEXT" >&2
+        printf "PERCONA_OPERATING_SYSTEM is not provided. %s\n" "$USAGE_TEXT" >&2
         usage 1
     fi
 
     if [[ -z "$PERCONA_DEPLOYMENT_METHOD" ]];
     then
-        printf "PERCONA_DEPLOYMENT_METHOD not provided. %s\n" "$USAGE_TEXT" >&2
+        printf "PERCONA_DEPLOYMENT_METHOD is not provided. %s\n" "$USAGE_TEXT" >&2
         usage 1
     fi
 
     if [[ -z "$PERCONA_INSTANCE_ID" ]];
     then
-        printf "PERCONA_INSTANCE_ID not provided. %s\n" "$USAGE_TEXT" >&2
+        printf "PERCONA_INSTANCE_ID is not provided. %s\n" "$USAGE_TEXT" >&2
         usage 1
     fi
 }
@@ -138,19 +138,12 @@ check_or_create_percona_instance_id_file()
 collect_data_for_report()
 {
     json_message_map["id"]=$(cat /proc/sys/kernel/random/uuid)
-    json_message_map["createTime"]="$(date +"%Y-%m-%dT%H:%M:%S%:z")"
+    json_message_map["createTime"]="$(date --iso-8601='seconds')"
     json_message_map["instanceId"]=$PERCONA_INSTANCE_ID
     json_message_map["product_family"]=$PERCONA_PRODUCT_FAMILY
 
     metrics_map["pillar_version"]=$PERCONA_PRODUCT_VERSION
-    # TODO:
-    # On my Ubuntu, the value of /etc/issue is "Ubuntu 22.04.3 LTS \n \l"
-    # Escape characters cause problems in Json, so remove them.
-    # But maybe the better idea is to use values as provided and then
-    # sanitize the whole json_message string after create_json_message()
-    # by escaping all escape characters?
-    # (see the comment at the end of collect_data_for_report())
-    metrics_map["OS"]=${PERCONA_OPERATING_SYSTEM//\\/}
+    metrics_map["OS"]=${PERCONA_OPERATING_SYSTEM}
     metrics_map["deployment"]=$PERCONA_DEPLOYMENT_METHOD
 }
 
@@ -220,9 +213,9 @@ create_json_message()
 
     json_message+="}"
 
-    # TODO:
-    # sanitize the message (in case of any escape characters, escape them)
-    # json_message=${json_message//\\/\\\\}
+    # Escape all escape characters which could have been passed as arguments
+    # If we don't do this, the JSON strin will not be valid
+    json_message=${json_message//\\/\\\\}
 }
 
 send_json_message()
