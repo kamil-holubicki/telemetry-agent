@@ -59,13 +59,26 @@ OPTIONS can be:
   -u  [PERCONA_TELEMETRY_URL]               Percona Telemetry Service endpoint                          [Default: $PERCONA_TELEMETRY_URL]
   -t  [PERCONA_SEND_TIMEOUT]                Default timeout for the curl command.                       [Default: $PERCONA_SEND_TIMEOUT]
 
+Note that -d PERCONA_PRODUCT_FAMILY can be set to any string, but only the following ones will be accepted
+by Percona Telemetry service (there is no validation of the script side):
+
+PRODUCT_FAMILY_PS
+PRODUCT_FAMILY_PXC
+PRODUCT_FAMILY_PXB
+PRODUCT_FAMILY_PSMDB
+PRODUCT_FAMILY_PBM
+PRODUCT_FAMILY_POSTGRESQL
+PRODUCT_FAMILY_PMM
+PRODUCT_FAMILY_EVEREST
+PRODUCT_FAMILY_PERCONA_TOOLKIT
+
 For example,
 on a CentOS7, you may run the script as:
 
-./$0 -f "PRODUCT_FAMILY_MYSQL" -v "8.0.33" -s "\$(cat /etc/redhat-release)" -i "13f5fc62-35b4-4716-b3e6-96c761fc204d" -j /tmp/percona.telemetry -u "https://TO/DO/PROVIDE/ENDPOINT -t 1
+./$0 -f "PRODUCT_FAMILY_PS" -v "8.0.33" -s "\$(cat /etc/redhat-release)" -i "13f5fc62-35b4-4716-b3e6-96c761fc204d" -j /tmp/percona.telemetry -u "https://TO/DO/PROVIDE/ENDPOINT -t 1
 
 on Ubuntu, you may run the script as:
-./$0 -f "PRODUCT_FAMILY_MYSQL" -v "8.0.33" -s "\$(cat /etc/issue)" -i "13f5fc62-35b4-4716-b3e6-96c761fc204d" -j /tmp/percona.telemetry -u "https://TO/DO/PROVIDE/ENDPOINT -t 1
+./$0 -f "PRODUCT_FAMILY_PS" -v "8.0.33" -s "\$(cat /etc/issue)" -i "13f5fc62-35b4-4716-b3e6-96c761fc204d" -j /tmp/percona.telemetry -u "https://TO/DO/PROVIDE/ENDPOINT -t 1
 
 EOF
 
