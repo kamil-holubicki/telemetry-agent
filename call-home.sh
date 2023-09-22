@@ -202,7 +202,7 @@ collect_data_for_report()
 
     metrics_map["pillar_version"]=$PERCONA_PRODUCT_VERSION
     metrics_map["OS"]=${PERCONA_OPERATING_SYSTEM}
-    metrics_map["hardware_arch"]="$(uname -mpi)"
+    metrics_map["hardware_arch"]="$(uname -mp)"
     metrics_map["deployment"]=$PERCONA_DEPLOYMENT_METHOD
 }
 
