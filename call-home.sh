@@ -202,6 +202,7 @@ collect_data_for_report()
 
     metrics_map["pillar_version"]=$PERCONA_PRODUCT_VERSION
     metrics_map["OS"]=${PERCONA_OPERATING_SYSTEM}
+    metrics_map["hardware_arch"]="$(uname -mpi)"
     metrics_map["deployment"]=$PERCONA_DEPLOYMENT_METHOD
 }
 
@@ -271,8 +272,8 @@ create_json_message()
 
     json_message+="}"
 
-    # Escape all escape characters which could have been passed as arguments
-    # If we don't do this, the JSON strin will not be valid
+    # Escape all 'escape characters' which could have been passed as arguments.
+    # If we don't do this, the JSON string can be invalid.
     json_message=${json_message//\\/\\\\}
 }
 
