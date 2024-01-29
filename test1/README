@@ -1,0 +1,10 @@
+Create the Docker container containing two processes:
+1. mysqld
+2. telemetry-agent
+
+mysqld is started as pid=1 and when it dies, the container is stopped.
+telemetry-agent is supervised by supervisord (http://supervisord.org/) and is restarted when it dies.
+
+
+docker build . -t test1
+docker run test1
